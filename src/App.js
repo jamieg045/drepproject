@@ -7,7 +7,7 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import { BrowserRouter as Router, Routes, Route, BrowserRouter } from 'react-router-dom';
-
+import Adjust from './mywork/adjust';
 function App() {
   return (
     <BrowserRouter>
@@ -26,6 +26,7 @@ function App() {
       <Route path='/' element={<Welcome />}> exact </Route>
       <Route exact path='/add' element={<Add />}> </Route>
       <Route path='/menu' element={<Menu />} />
+      <Route path='/adjust/:id' element={<Adjust></Adjust>}/>
       </Routes>
     </div>
     </BrowserRouter>

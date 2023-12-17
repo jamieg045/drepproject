@@ -3,6 +3,7 @@ const app = express()
 const port = 5000
 const cors = require('cors');
 const bodyParser = require('body-parser')
+const mongoose = require('mongoose');
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
@@ -17,54 +18,57 @@ res.header("Access-Control-Allow-Headers",
 next();
 });
 
-app.get('/api/items', (req, res) => {
-    const items = [
-        {
-            "title": "Learn Git in a Month of Lunches",
-            "isbn": "1617292419",
-            "pageCount": 0,
-            "thumbnailUrl":
-                "https://s3.amazonaws.com/AKIAJC5RLADLUMVRPFDQ.book-thumb-images/umali.jpg",
-                "status": "MEAP",
-            "authors": ["Rick Umali"],
-            "categories": []
-        },
-        {
-            "title": "MongoDB in Action, Second Edition",
-            "isbn": "1617291609",
-            "pageCount": 0,
-            "thumbnailUrl":
-                "https://s3.amazonaws.com/AKIAJC5RLADLUMVRPFDQ.book-thumb-images/banker2.jp",
-                "status": "MEAP",
-                "authors": [
-                "Kyle Banker",
-                "Peter Bakkum",
-                "Tim Hawkins",
-                "Shaun Verch",
-                "Douglas Garrett"
-            ],
-            "categories": []
-        },
-        {
-            "title": "Getting MEAN with Mongo, Express, Angular, and Node",
-            "isbn": "1617292036",
-            "pageCount": 0,
-            "thumbnailUrl":
-                "https://s3.amazonaws.com/AKIAJC5RLADLUMVRPFDQ.book-thumb-images/sholmes.jp", 
-                "status": "MEAP",
-                "authors": ["Simon Holmes"],
-                "categories": []
-        }
-    ]
+main().catch(err => console.log(err));
 
-    res.json({
-        myitems:items
-    })
+
+async function main()
+{
+    await mongoose.connect('mongodb+srv://jamieg045:090599@datarepcluster.qykyrhm.mongodb.net/');
+}
+
+const itemSchema = new mongoose.Schema(
+    {
+        title: String,
+        label: String,
+        price: String
+    }
+);
+
+const itemModel = mongoose.model('items', itemSchema);
+
+app.get('/api/items', async (req, res) => {
+    let items = await itemModel.find({});
+    console.log(items);
+    res.json(items);
 })
 
 app.post('/api/items', (req, res) => {
     console.log(req.body);
-    res.send('New Item Added');
+
+    itemModel.create({
+        title: req.body.title,
+        label: req.body.label,
+        price: req.body.price
+    }).then(() => { res.send('Item recieved'); })
+    .catch(() => { res.send ('Item not recieved'); })
+})
+
+app.get('/api/items/:id', async (req, res) =>
+{
+    console.log(req.params.id);
+    let item = await itemModel.findById({_id:req.params.id});
+    res.send(item);
+})
+
+app.put('/api/items/:id', async (req, res) => {
+    console.log("Updated: "+req.params.id);
+
+    let item = await itemModel.findByIdAndUpdate(
+        req.params.id,
+        req.body,
+        {new:true})
+
+        res.send(item);
 })
 
 app.listen(port, () => {

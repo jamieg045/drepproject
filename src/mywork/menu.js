@@ -5,12 +5,12 @@ import axios from "axios";
 
 
 function Menu() {
-    const [items, setData] = useState([]);
+    const [items, setItems] = useState([]);
 
     useEffect(() => {
         axios.get('http://localhost:5000/api/items')
         .then((response) => {
-            setData(response.data.myItems);
+            setItems(response.data);
         })
         .catch((error) => {
             console.log(error);
