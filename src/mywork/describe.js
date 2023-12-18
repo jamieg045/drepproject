@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
 import Card from 'react-bootstrap/Card';
+import Button  from 'react-bootstrap/Button';
+import axios from 'axios';
 
 function Describe(props)
 {
@@ -17,6 +19,16 @@ function Describe(props)
                     </blockquote>
                 </Card.Body>
                 <Link to={'/adjust/'+props.myItem._id} className="btn btn-secondary">Edit</Link>
+                <Button variant="danger" onClick={(e) => {
+                    e.preventDefault();
+                    axios.delete('http://localhost:5000/api/items/' + props.myItem._id)
+                    .then((res)  => {
+                        let reload = props.Reload();
+                    })
+                    .catch(); 
+                }}>Remove Item</Button>
+                <br></br>
+                <br></br>
             </Card>
         </div>
     );

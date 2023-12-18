@@ -12,7 +12,7 @@ export default function Adjust(props)
     const [label, setLabel] = useState("");
     const [price, setPrice] = useState("");
 
-    const navigate = useNavigate;
+    const navigate = useNavigate();
 
     useEffect(() => {
         axios.get('http://localhost:5000/api/items/' + id)
@@ -71,5 +71,5 @@ export default function Adjust(props)
                 </div>
             </form>
         </div>
-    )
+    );
 }

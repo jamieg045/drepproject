@@ -4,6 +4,8 @@ const port = 5000
 const cors = require('cors');
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose');
+const path = require('path');
+app.use('/static', express.static(path.join(__dirname, 'build//static')));
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
@@ -69,6 +71,16 @@ app.put('/api/items/:id', async (req, res) => {
         {new:true})
 
         res.send(item);
+})
+
+app.delete('/api/items/:id', async (req,res) => {
+    console.log("Deleted: "+req.params.id);
+    let item = await itemModel.findByIdAndDelete({_id: req.params.id});
+    res.send(item);
+})
+
+app.get('*', (req,res) => {
+    res.sendFile(path.join(__dirname+'/../build/index.html'));
 })
 
 app.listen(port, () => {
